@@ -3,7 +3,7 @@ const path = require('path');
 const routes = require('./routes');
 
 const app = express();
-const PORT = 5500;
+const PORT = 3000;
 
 // กำหนดให้ Express serve ไฟล์จากโฟลเดอร์ uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
