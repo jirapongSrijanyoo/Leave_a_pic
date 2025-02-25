@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>อัปโหลดไฟล์</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="upload-container">
+        <h2>📤 อัปโหลดไฟล์</h2>
+        
+        <!-- ปุ่มเลือกไฟล์ -->
+        <input type="file" id="fileInput" onchange="previewFile()">
+        <label for="fileInput">เลือกไฟล์</label>
+
+        <!-- พรีวิวรูป -->
+        <img id="preview" style="display:none; max-width:100%; margin-top:10px;">
+
+        <!-- พรีวิววิดีโอและเสียง -->
+        <video id="videoPreview" style="display:none; max-width:100%; margin-top:10px;" controls></video>
+        <audio id="audioPreview" style="display:none; margin-top:10px;" controls></audio>
+
+        <!-- หลอดแสดงสถานะการอัปโหลด -->
+        <progress id="progressBar" value="0" max="100" style="width:100%; display:none;"></progress>
+
+        <!-- ปุ่มอัปโหลด และ ปุ่มยกเลิก -->
+        <div class="buttons">
+            <button id="uploadBtn" onclick="uploadFile()" style="display:none;">อัปโหลด</button>
+            <button id="cancelBtn" onclick="cancelUpload()" style="display:none;">ยกเลิก</button>
+        </div>
+
+        <p id="link"></p>
+        <button id="copyBtn" style="display:none;" onclick="copyLink()">📋 คัดลอกลิงก์</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

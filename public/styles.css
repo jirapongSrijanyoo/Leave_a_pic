@@ -1,0 +1,149 @@
+/* ทั่วไป */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #121212; /* พื้นหลังดำ */
+    color: #e0e0e0; /* ตัวอักษรสีอ่อน */
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center; /* จัดตำแหน่งข้อความให้อยู่กลาง */
+    flex-direction: column; /* ให้ทุกอย่างเรียงตามแนวตั้ง */
+}
+
+/* กล่องอัปโหลดไฟล์ */
+.upload-container {
+    background: linear-gradient(145deg, #333, #444); /* พื้นหลังไล่สีมืด */
+    border-radius: 15px;
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3), -10px -10px 20px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* ให้ทุกอย่างในกล่องอัปโหลดอยู่ตรงกลาง */
+    justify-content: center; /* จัดให้ทุกอย่างอยู่กลางทั้งแนวนอนและแนวตั้ง */
+    text-align: center;
+}
+
+.upload-container:hover {
+    box-shadow: 15px 15px 30px rgba(0, 0, 0, 0.4), -15px -15px 30px rgba(255, 255, 255, 0.15);
+}
+
+/* ปุ่มเลือกไฟล์ */
+.upload-container input[type="file"] {
+    display: none;
+}
+
+.upload-container label {
+    display: block;
+    background-color: #6200ea; /* สีม่วง */
+    color: white;
+    padding: 15px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+    margin-bottom: 20px;
+}
+
+.upload-container label:hover {
+    background-color: #3700b3; /* สีน้ำเงินเข้ม */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+#preview, #videoPreview, #audioPreview {
+    max-width: 100%;
+    max-height: 80vh; /* กำหนดขนาดสูงสุดเป็น 80% ของหน้าจอ */
+    margin-top: 20px;
+    border-radius: 10px;
+    object-fit: contain; /* ทำให้ไฟล์ขยายตามกรอบ */
+    display: none; /* ซ่อนพรีวิวก่อน */
+}
+
+
+/* หลอดแสดงสถานะการอัปโหลด */
+#progressBar {
+    width: 100%;
+    height: 10px;
+    margin-top: 20px;
+    border-radius: 5px;
+    background-color: #444; /* สีพื้นหลังของโปรเกรสบาร์ */
+    appearance: none;
+    display: none; /* เริ่มต้นจะไม่แสดง */
+}
+
+#progressBar::-webkit-progress-bar {
+    background-color: #444; /* สีพื้นหลังของโปรเกรสบาร์ */
+    border-radius: 5px;
+}
+
+#progressBar::-webkit-progress-value {
+    background-color: #6200ea; /* สีของบาร์แสดงสถานะ */
+    border-radius: 5px;
+}
+
+/* ปุ่มอัปโหลด และ ปุ่มยกเลิก */
+button {
+    background-color: #6200ea; /* สีม่วง */
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    margin-top: 20px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    display: inline-block; /* ให้ปุ่มอยู่ในบรรทัดเดียวกัน */
+}
+
+button:hover {
+    background-color: #3700b3; /* สีน้ำเงินเข้ม */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* ปุ่มคัดลอกลิงก์ */
+button#copyBtn {
+    background-color: #007bff; /* สีน้ำเงิน */
+    margin-top: 10px;
+}
+
+button#copyBtn:hover {
+    background-color: #0056b3; /* สีน้ำเงินเข้ม */
+}
+
+/* กรอบและสไตล์ของลิงก์ */
+#link a {
+    display: inline-block;
+    background-color: #f4f4f4;
+    color: #6200ea;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1rem;
+    margin-top: 20px;
+    transition: background-color 0.3s, border-color 0.3s;
+    border: 2px solid #6200ea; /* กรอบของลิงก์ */
+}
+
+#link a:hover {
+    background-color: #6200ea;
+    color: white;
+    border-color: #3700b3;
+}
+
+/* ปรับให้ปุ่มอยู่ในบรรทัดเดียวกัน */
+.upload-container > .buttons {
+    display: flex;
+    justify-content: center; /* จัดให้ปุ่มอยู่กลาง */
+    gap: 20px; /* ระยะห่างระหว่างปุ่ม */
+}
