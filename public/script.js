@@ -10,6 +10,7 @@ function previewFile() {
     const label = document.querySelector("label");
 
     selectedFile = fileInput.files[0];
+
     if (selectedFile) {
         // ซ่อนพรีวิวทั้งหมดก่อน
         preview.style.display = "none";
@@ -18,49 +19,62 @@ function previewFile() {
 
         // ตรวจสอบประเภทของไฟล์
         const fileType = selectedFile.type;
+        const allowedTypes = [
+            "image/png", "image/jpeg", "image/jpg", "image/webp",
+            "video/mp4",
+            "audio/mp3", "audio/wav"
+        ];
+
+        if (!allowedTypes.includes(fileType)) {
+            showPopup("ไฟล์ที่เลือกไม่รองรับ! กรุณาอัปโหลดเฉพาะ PNG, JPEG, JPG, WEBP, MP4, MP3, WAV เท่านั้น", "error");
+            fileInput.value = ""; // ล้างค่า input
+            selectedFile = null;
+            return;
+        }
+
+        // แสดงตัวอย่างไฟล์ที่รองรับ
         if (fileType.startsWith("image/")) {
-            // ถ้าเป็นไฟล์ภาพ
             const reader = new FileReader();
             reader.onload = function (e) {
                 preview.style.display = "block";
                 preview.src = e.target.result;
-                preview.style.maxWidth = "80%"; // ขยายกรอบให้ใหญ่ขึ้น
-                preview.style.maxHeight = "80vh"; // ขยายขนาดสูงสุดตามหน้าจอ
-                preview.style.objectFit = "contain"; // ทำให้ภาพขยายตามกรอบ
+                preview.style.maxWidth = "90%";
+                preview.style.maxHeight = "90vh";
+                preview.style.objectFit = "contain";
             };
             reader.readAsDataURL(selectedFile);
         } else if (fileType.startsWith("video/")) {
-            // ถ้าเป็นไฟล์วิดีโอ
             const reader = new FileReader();
             reader.onload = function (e) {
                 videoPreview.style.display = "block";
                 videoPreview.src = e.target.result;
-                videoPreview.style.maxWidth = "80%"; // ขยายกรอบให้ใหญ่ขึ้น
-                videoPreview.style.maxHeight = "80vh"; // ขยายขนาดสูงสุดตามหน้าจอ
-                videoPreview.style.objectFit = "contain"; // ทำให้วิดีโอขยายตามกรอบ
+                videoPreview.style.maxWidth = "90%";
+                videoPreview.style.maxHeight = "90vh";
+                videoPreview.style.objectFit = "contain";
             };
             reader.readAsDataURL(selectedFile);
         } else if (fileType.startsWith("audio/")) {
-            // ถ้าเป็นไฟล์เสียง
             const reader = new FileReader();
             reader.onload = function (e) {
                 audioPreview.style.display = "block";
                 audioPreview.src = e.target.result;
-                audioPreview.style.maxWidth = "80%"; // ขยายกรอบให้ใหญ่ขึ้น
-                audioPreview.style.objectFit = "contain"; // ทำให้ไฟล์เสียงขยายตามกรอบ
+                audioPreview.style.maxWidth = "90%";
             };
             reader.readAsDataURL(selectedFile);
         }
 
         // ซ่อนปุ่มเลือกไฟล์และแสดงปุ่มอัปโหลด
-        label.style.display = "none"; // ซ่อนปุ่มเลือกไฟล์
+        label.style.display = "none";
         uploadBtn.style.display = "inline-block";
         cancelBtn.style.display = "inline-block";
     }
 }
 
 function uploadFile() {
-    if (!selectedFile) return;
+    if (!selectedFile) {
+        showPopup("กรุณาเลือกไฟล์ก่อนอัปโหลด", "error");
+        return;
+    }
 
     const progressBar = document.getElementById("progressBar");
     const link = document.getElementById("link");
@@ -73,31 +87,37 @@ function uploadFile() {
     progressBar.style.display = "block";
     progressBar.value = 0; // เริ่มต้นโปรเกรสบาร์ที่ 0
 
-    // สร้างฟังก์ชันจำลองการอัปโหลด
-    let progress = 0;
-    const interval = setInterval(() => {
-        progress += 10;
-        progressBar.value = progress; // อัปเดตโปรเกรสบาร์
-        if (progress >= 100) {
-            clearInterval(interval); // หยุดโปรเกรสบาร์เมื่อถึง 100%
-        }
-    }, 200); // จำลองการอัปโหลดไฟล์ทุกๆ 200ms
+    // ใช้ XMLHttpRequest เพื่อติดตาม progress
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/upload", true);
 
-    // ส่งไฟล์ไปยังเซิร์ฟเวอร์
-    fetch("/upload", {
-        method: "POST",
-        body: formData,
-    })
-    .then(response => response.json())
-    .then(data => {
-        // แสดงลิงก์หลังการอัปโหลดสำเร็จ
-        const fileLink = data.fileUrl;
-        link.innerHTML = `<a href="${fileLink}" target="_blank">${fileLink}</a>`;
-        copyBtn.style.display = "inline-block"; // แสดงปุ่มคัดลอกลิงก์
-    })
-    .catch(err => {
-        console.error("Error uploading file:", err);
-    });
+    xhr.upload.onprogress = function (event) {
+        if (event.lengthComputable) {
+            const percentComplete = (event.loaded / event.total) * 100;
+            progressBar.value = percentComplete;
+        }
+    };
+
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+
+            // แสดงลิงก์ดาวน์โหลด
+            link.innerHTML = `<a href="${response.fileUrl}" target="_blank">${response.fileUrl}</a>`;
+            copyBtn.style.display = "inline-block";
+
+            // แสดง popup แจ้งเตือน
+            showPopup("อัปโหลดสำเร็จ!", "success");
+        } else {
+            showPopup("เกิดข้อผิดพลาดในการอัปโหลด", "error");
+        }
+    };
+
+    xhr.onerror = function () {
+        showPopup("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error");
+    };
+
+    xhr.send(formData);
 }
 
 function cancelUpload() {
@@ -109,42 +129,88 @@ function cancelUpload() {
     const fileInput = document.getElementById("fileInput");
     const label = document.querySelector("label");
     const progressBar = document.getElementById("progressBar");
+    const link = document.getElementById("link");
+    const copyBtn = document.getElementById("copyBtn");
 
+    // ซ่อนพรีวิวไฟล์ทั้งหมด
     preview.style.display = "none";
+    preview.src = ""; 
     videoPreview.style.display = "none";
+    videoPreview.src = "";
     audioPreview.style.display = "none";
+    audioPreview.src = "";
+
+    // ซ่อนปุ่มอัปโหลดและยกเลิก
     uploadBtn.style.display = "none";
     cancelBtn.style.display = "none";
-    label.style.display = "block"; // แสดงปุ่มเลือกไฟล์อีกครั้ง
-    fileInput.value = ''; // ล้างค่าของ input
-    progressBar.style.display = "none"; // ซ่อนโปรเกรสบาร์
+
+    // แสดงปุ่มเลือกไฟล์ใหม่
+    label.style.display = "block";
+
+    // รีเซ็ตค่า input file
+    fileInput.value = "";
+
+    // รีเซ็ต progress bar
+    progressBar.style.display = "none";
+    progressBar.value = 0;
+
+    // ซ่อนลิงก์ดาวน์โหลด
+    link.innerHTML = "";
+    copyBtn.style.display = "none";
+
+    // เคลียร์ตัวแปร selectedFile
+    selectedFile = null;
+
+    // แสดง popup แจ้งเตือน
+    showPopup("ยกเลิกการอัปโหลดเรียบร้อย", "info");
 }
 
 function copyLink() {
-    const link = document.getElementById("link").querySelector('a');
-    navigator.clipboard.writeText(link.href)
-        .then(() => {
-            // สร้างป็อปอัพข้อความ
-            const popup = document.createElement("div");
-            popup.textContent = "คัดลอกลิงก์เรียบร้อย!";
-            popup.style.position = "fixed";
-            popup.style.top = "20px";
-            popup.style.right = "20px";
-            popup.style.backgroundColor = "#28a745";
-            popup.style.color = "#fff";
-            popup.style.padding = "10px 20px";
-            popup.style.borderRadius = "5px";
-            popup.style.fontSize = "1rem";
-            popup.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
-            popup.style.zIndex = "9999";
-            document.body.appendChild(popup);
+    const linkElement = document.getElementById("link").querySelector("a");
 
-            // ลบป็อปอัพหลังจาก 3 วินาที
-            setTimeout(() => {
-                popup.style.transition = "opacity 0.5s ease";
-                popup.style.opacity = 0;
-                setTimeout(() => popup.remove(), 500); // ลบป็อปอัพหลังจากการหายไป
-            }, 3000);
+    if (!linkElement) {
+        showPopup("ไม่มีลิงก์ให้คัดลอก", "error");
+        return;
+    }
+
+    navigator.clipboard.writeText(linkElement.href)
+        .then(() => {
+            showPopup("คัดลอกลิงก์เรียบร้อย!", "success");
         })
-        .catch(err => console.error("คัดลอกไม่สำเร็จ:", err));
+        .catch(() => {
+            showPopup("ไม่สามารถคัดลอกลิงก์ได้", "error");
+        });
+}
+
+// ฟังก์ชันแสดง Popup แจ้งเตือน
+function showPopup(message, type = "info") {
+    const popup = document.createElement("div");
+    popup.textContent = message;
+    popup.style.position = "fixed";
+    popup.style.top = "20px";
+    popup.style.right = "20px";
+    popup.style.padding = "10px 20px";
+    popup.style.borderRadius = "5px";
+    popup.style.fontSize = "1rem";
+    popup.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
+    popup.style.zIndex = "9999";
+    popup.style.color = "#fff";
+
+    // กำหนดสีพื้นหลังตามประเภทของ popup
+    if (type === "error") {
+        popup.style.backgroundColor = "#dc3545"; // สีแดง (error)
+    } else if (type === "success") {
+        popup.style.backgroundColor = "#28a745"; // สีเขียว (success)
+    } else {
+        popup.style.backgroundColor = "#007bff"; // สีน้ำเงิน (info)
+    }
+
+    document.body.appendChild(popup);
+
+    // ลบ Popup หลังจาก 3 วินาที
+    setTimeout(() => {
+        popup.style.transition = "opacity 0.5s ease";
+        popup.style.opacity = 0;
+        setTimeout(() => popup.remove(), 500); // ลบ popup ออกจาก DOM
+    }, 3000);
 }
