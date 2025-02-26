@@ -1,5 +1,6 @@
 # Leave_a_pic
 ฝากรูปและแสดงลิงค์
+รองรับไฟล์ PNG, JPEG, JPG, WEBP, MP4, MP3, WAV 
 
 # วิธีนำโค้ดไปใช้
 ## โคลน repo นี้
