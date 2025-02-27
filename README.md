@@ -21,3 +21,4 @@ node index.js
 ```
 ## คุณสามารถลองใช้ DEMO ได้ที่
 https://demo.lamar.in.th/
+demo ปิดให้ทดสอบวันที่ 01/03/2025 14:00 UTC+7
