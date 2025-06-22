@@ -1,20 +1,26 @@
 const express = require('express');
 const path = require('path');
-const routes = require('./routes');
+const mainRouter = require('./routes'); // Import the new main router
 
 const app = express();
-const PORT = 3000;
+const PORT = 5500;
 
-// กำหนดให้ Express serve ไฟล์จากโฟลเดอร์ uploads
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Middleware อ่าน JSON body
+app.use(express.json());
 
-// ใช้ static files สำหรับ public
+// Static files (เฉพาะ /public เท่านั้น)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ใช้ routes
-app.use(routes);
+// Routes
+app.use(mainRouter); // Use the new main router
 
-// รันเซิร์ฟเวอร์
+// Log server errors
+app.use((err, req, res, next) => {
+  console.error("Server error:", err); // Log the error
+  res.status(500).json({ error: "เกิดข้อผิดพลาดในเซิร์ฟเวอร์" });
+});
+
+// Run server
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost/${PORT}`);
+  console.log(`Server running on http://localhost:5500`);
 });
