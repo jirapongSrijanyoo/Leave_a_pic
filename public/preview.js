@@ -655,6 +655,35 @@ const modalBg = document.getElementById('modalBg'); // Get modal background
             }
         }
 
+        // --- File Delete ---
+        async function deleteFile(filename) {
+            const password = prompt('กรุณาใส่รหัสผ่านเพื่อยืนยันการลบไฟล์:');
+            if (!password) return;
+
+            try {
+                // Construct the URL with the filename included
+                const deleteUrl = `/files/${encodeURIComponent(filename)}`;
+
+                const res = await fetch(deleteUrl, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    // Send password in the body
+                    body: JSON.stringify({ password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    showToast('ลบไฟล์สำเร็จ', 'success');
+                    fetchMedia(); // Refresh the gallery
+                } else {
+                    showToast(data.error || 'เกิดข้อผิดพลาด', 'error');
+                }
+            } catch {
+                showToast('เกิดข้อผิดพลาด', 'error');
+            }
+        }
+
+
         // --- Search/Filter ---
         function searchFiles() {
             const searchInput = document.getElementById('searchInput').value.trim().toLowerCase();
