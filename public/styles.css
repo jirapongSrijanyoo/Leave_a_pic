@@ -1,149 +1,480 @@
-/* ทั่วไป */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* New UI CSS with Dark/Light Mode */
+
+:root {
+    /* Dark Mode Variables (Default) */
+    --bg-color: #121212;
+    --card-bg: #1E1E1E;
+    --bg-secondary: #282828;
+    --text-color: #e0e0e0;
+    --text-muted: #a0a0a0;
+    --primary-color: #fff;
+    --primary-hover: #2196f3;
+    --accent-color: #e94560;
+    --accent-hover: #d03550;
+    --border-color: #333333;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --success-color: #4caf50;
+    --danger-color: #f44336;
+    --danger-hover: #ff7b8a;
+    --info-color: #2196f3;
+    --progress-bg: #333333;
+    --progress-fill: #e94560;
+
+    /* Button Text Colors */
+    --button-primary-text: #000; /* Primary button text color */
+    --button-accent-text: #fff; /* Accent button text color */
+    --button-danger-text: #fff; /* Danger button text color */
+    --button-secondary-text: var(--text-secondary); /* Secondary button text color (need text-secondary) */
+
+    /* RGB values for alpha colors */
+    --primary-color-rgb: 255, 255, 255; /* RGB for --primary-color */
+    --danger-color-rgb: 244, 67, 54; /* RGB for --danger-color */
+    --success-color-rgb: 76, 175, 80; /* RGB for --success-color */
+}
+
+/* Explicit Light Mode via Class */
+:root.light-mode {
+    --bg-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --bg-secondary: #e9ecef;
+    --text-color: #333333;
+    --text-muted: #666666;
+    --primary-color: #007bff;
+    --primary-hover: #0056b3;
+    --accent-color: #28a745;
+    --accent-hover: #218838;
+    --border-color: #adb5bd;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --danger-hover: #ff7b8a;
+    --info-color: #17a2b8;
+    --progress-bg: #dee2e6;
+    --progress-fill: #007bff;
+
+    /* Button Text Colors */
+    --button-primary-text: #fff;
+    --button-accent-text: #fff;
+    --button-danger-text: #fff;
+    --button-secondary-text: var(--text-secondary); /* Need text-secondary */
+
+    /* RGB values for alpha colors */
+    --primary-color-rgb: 0, 123, 255;
+    --danger-color-rgb: 220, 53, 69;
+    --success-color-rgb: 40, 167, 69;
+}
+
+
+@media (prefers-color-scheme: light) {
+    /* System Preference Light Mode (Overridden by .light-mode class) */
+    :root {
+        --bg-color: #f0f2f5;
+        --card-bg: #ffffff;
+        --bg-secondary: #e9ecef;
+        --text-color: #333333;
+        --text-muted: #666666;
+        --primary-color: #007bff;
+        --primary-hover: #0056b3;
+        --accent-color: #28a745;
+        --accent-hover: #218838;
+        --border-color: #adb5bd;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --danger-hover: #ff7b8a;
+        --info-color: #17a2b8;
+        --progress-bg: #dee2e6;
+        --progress-fill: #007bff;
+
+        --button-primary-text: #fff;
+        --button-accent-text: #fff;
+        --button-danger-text: #fff;
+        --button-secondary-text: var(--text-secondary);
+
+        --primary-color-rgb: 0, 123, 255;
+        --danger-color-rgb: 220, 53, 69;
+        --success-color-rgb: 40, 167, 69;
+    }
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #121212; /* พื้นหลังดำ */
-    color: #e0e0e0; /* ตัวอักษรสีอ่อน */
-    line-height: 1.6;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    text-align: center; /* จัดตำแหน่งข้อความให้อยู่กลาง */
-    flex-direction: column; /* ให้ทุกอย่างเรียงตามแนวตั้ง */
+    font-family: 'Noto Sans Thai', 'Inter', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    transition: background 0.3s, color 0.3s;
 }
 
-/* กล่องอัปโหลดไฟล์ */
-.upload-container {
-    background: linear-gradient(145deg, #333, #444); /* พื้นหลังไล่สีมืด */
-    border-radius: 15px;
-    padding: 40px;
-    width: 100%;
-    max-width: 450px;
-    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3), -10px -10px 20px rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+.navbar {
+    background: var(--card-bg);
+    padding: 0 20px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-color);
+    transition: background 0.3s;
+}
+
+.navbar .brand {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s;
+}
+
+.navbar .nav-btns {
+    display: flex;
+    gap: 10px;
+}
+
+.navbar button {
+    background: var(--accent-color);
+    color: var(--button-accent-text);
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+}
+
+/* Style for the theme toggle button */
+#themeToggleBtn {
+    background: none;
+    color: var(--text-muted);
+    border: none;
+    border-radius: 6px;
+    padding: 8px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#themeToggleBtn:hover {
+    background: var(--bg-secondary);
+    color: var(--primary);
+}
+
+.navbar button:hover {
+    background: var(--accent-hover);
+}
+
+.center-container {
+    min-height: 100vh;
+    width: 100vw;
     display: flex;
     flex-direction: column;
-    align-items: center; /* ให้ทุกอย่างในกล่องอัปโหลดอยู่ตรงกลาง */
-    justify-content: center; /* จัดให้ทุกอย่างอยู่กลางทั้งแนวนอนและแนวตั้ง */
-    text-align: center;
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px;
+    padding-bottom: 20px;
+    box-sizing: border-box;
 }
 
-.upload-container:hover {
-    box-shadow: 15px 15px 30px rgba(0, 0, 0, 0.4), -15px -15px 30px rgba(255, 255, 255, 0.15);
+.upload-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow-color);
+    padding: 30px 25px;
+    max-width: 500px;
+    width: 95vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background 0.3s, box-shadow 0.3s;
 }
 
-/* ปุ่มเลือกไฟล์ */
-.upload-container input[type="file"] {
-    display: none;
-}
-
-.upload-container label {
-    display: block;
-    background-color: #6200ea; /* สีม่วง */
-    color: white;
-    padding: 15px 30px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1.1rem;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s, box-shadow 0.3s;
+.upload-title {
+    font-size: 1.8rem;
+    font-weight: 600;
     margin-bottom: 20px;
+    color: var(--primary-color);
+    text-align: center;
+    transition: color 0.3s;
 }
 
-.upload-container label:hover {
-    background-color: #3700b3; /* สีน้ำเงินเข้ม */
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-#preview, #videoPreview, #audioPreview {
-    max-width: 100%;
-    max-height: 80vh; /* กำหนดขนาดสูงสุดเป็น 80% ของหน้าจอ */
-    margin-top: 20px;
+.drop-area {
+    border: 2px dashed var(--border-color);
     border-radius: 10px;
-    object-fit: contain; /* ทำให้ไฟล์ขยายตามกรอบ */
-    display: none; /* ซ่อนพรีวิวก่อน */
-}
-
-
-/* หลอดแสดงสถานะการอัปโหลด */
-#progressBar {
+    padding: 25px 0;
     width: 100%;
-    height: 10px;
-    margin-top: 20px;
-    border-radius: 5px;
-    background-color: #444; /* สีพื้นหลังของโปรเกรสบาร์ */
-    appearance: none;
-    display: none; /* เริ่มต้นจะไม่แสดง */
-}
-
-#progressBar::-webkit-progress-bar {
-    background-color: #444; /* สีพื้นหลังของโปรเกรสบาร์ */
-    border-radius: 5px;
-}
-
-#progressBar::-webkit-progress-value {
-    background-color: #6200ea; /* สีของบาร์แสดงสถานะ */
-    border-radius: 5px;
-}
-
-/* ปุ่มอัปโหลด และ ปุ่มยกเลิก */
-button {
-    background-color: #6200ea; /* สีม่วง */
-    color: white;
-    padding: 12px 30px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
+    background: var(--bg-secondary);
+    color: var(--text-muted);
+    text-align: center;
     font-size: 1.1rem;
-    margin-top: 20px;
-    transition: background-color 0.3s, box-shadow 0.3s;
-    display: inline-block; /* ให้ปุ่มอยู่ในบรรทัดเดียวกัน */
+    margin-bottom: 20px;
+    transition: border-color 0.3s, background 0.3s, color 0.3s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-button:hover {
-    background-color: #3700b3; /* สีน้ำเงินเข้ม */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+.drop-area.dragover {
+    border-color: var(--success-color);
+    background: rgba(var(--success-color-rgb), 0.1);
+    color: var(--text-color);
 }
 
-/* ปุ่มคัดลอกลิงก์ */
-button#copyBtn {
-    background-color: #007bff; /* สีน้ำเงิน */
-    margin-top: 10px;
+.preview-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 15px;
+    gap: 15px;
 }
 
-button#copyBtn:hover {
-    background-color: #0056b3; /* สีน้ำเงินเข้ม */
+.preview-box {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s, box-shadow 0.3s;
 }
 
-/* กรอบและสไตล์ของลิงก์ */
+.preview-box .content-wrap {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 1;
+}
+
+
+.preview-img, .preview-video, .preview-audio, .preview-icon {
+    max-width: 60px;
+    max-height: 60px;
+    border-radius: 6px;
+    background: var(--border-color);
+    object-fit: contain;
+    display: none;
+    transition: background 0.3s;
+}
+
+.preview-icon {
+    width: 32px;
+    height: 32px;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.preview-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.preview-name {
+    font-size: 1rem;
+    color: var(--text-color);
+    font-weight: 500;
+    word-break: break-all;
+    transition: color 0.3s;
+}
+
+.preview-size {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    transition: color 0.3s;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: var(--danger-color);
+    font-size: 1.4em;
+    cursor: pointer;
+    margin-left: 5px;
+    transition: color 0.2s;
+    z-index: 1;
+}
+
+.remove-btn:hover { color: var(--danger-hover); }
+
+.progress-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 6px;
+    background: var(--progress-bg);
+    overflow: hidden;
+    display: none;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    z-index: 0;
+    transition: background 0.3s;
+}
+
+.progress-bar-inner {
+    height: 100%;
+    background: var(--progress-fill);
+    width: 0;
+    transition: width 0.2s ease-out;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.buttons button {
+    background: var(--primary-color);
+    color: var(--button-primary-text);
+    border: none;
+    border-radius: 6px;
+    padding: 10px 25px;
+    font-size: 1.05rem;
+
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+}
+
+.buttons button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.buttons button:hover:enabled {
+    background: var(--primary-hover);
+}
+
+#cancelBtn {
+    background: var(--danger-color);
+    color: var(--button-danger-text); /* Use danger text color */
+}
+
+#cancelBtn:hover:enabled {
+    background: var(--danger-color);
+    opacity: 0.8;
+}
+
+
+#link {
+    margin-top: 15px;
+    width: 100%;
+    text-align: center;
+    word-break: break-all;
+}
+
 #link a {
     display: inline-block;
-    background-color: #f4f4f4;
-    color: #6200ea;
-    padding: 10px 20px;
-    border-radius: 8px;
+    background: var(--bg-secondary);
+    color: var(--primary-color);
+    padding: 6px 12px;
+    border-radius: 6px;
     text-decoration: none;
     font-size: 1rem;
-    margin-top: 20px;
-    transition: background-color 0.3s, border-color 0.3s;
-    border: 2px solid #6200ea; /* กรอบของลิงก์ */
+    margin-top: 5px;
+    border: 1px solid var(--border-color);
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
 #link a:hover {
-    background-color: #6200ea;
-    color: white;
-    border-color: #3700b3;
+    background: var(--primary-color);
+    color: var(--button-primary-text);
+    border-color: var(--primary-hover);
 }
 
-/* ปรับให้ปุ่มอยู่ในบรรทัดเดียวกัน */
-.upload-container > .buttons {
-    display: flex;
-    justify-content: center; /* จัดให้ปุ่มอยู่กลาง */
-    gap: 20px; /* ระยะห่างระหว่างปุ่ม */
+#copyBtn {
+    background: var(--accent-color);
+    color: var(--button-accent-text);
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 1rem;
+    margin-top: 12px;
+    cursor: pointer;
+    display: none;
+    transition: background 0.2s;
+}
+
+#copyBtn:hover {
+    background: var(--accent-hover);
+}
+
+.popup {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--info-color);
+    color: var(--button-accent-text);
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-shadow: var(--shadow-color);
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out, background 0.3s;
+}
+
+.popup.success {
+    background: var(--success-color);
+}
+.popup.error {
+    background: var(--danger-color);
+}
+.popup.fade-out {
+    opacity: 0;
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        height: 50px;
+        padding: 0 10px;
+    }
+    .navbar .brand { font-size: 1.4rem; }
+    .navbar button { font-size: 0.9rem; padding: 6px 12px; }
+    #themeToggleBtn {
+        width: 36px;
+        height: 36px;
+        padding: 6px;
+        font-size: 1rem;
+    }
+    .center-container { padding-top: 70px; }
+    .upload-card { padding: 20px 15px; }
+    .upload-title { font-size: 1.5rem; margin-bottom: 15px; }
+    .drop-area { font-size: 1rem; padding: 20px 0; margin-bottom: 15px; }
+    .preview-box { padding: 8px; gap: 10px; }
+    .preview-img, .preview-video, .preview-audio { max-width: 50px; max-height: 50px; }
+    .preview-icon { width: 28px; height: 28px; padding: 4px; }
+    .preview-name { font-size: 0.95rem; }
+    .preview-size { font-size: 0.85rem; }
+    .remove-btn { font-size: 1.3em; margin-left: 3px; }
+    .buttons { gap: 10px; margin-top: 10px; }
+    .buttons button, #copyBtn { font-size: 0.95rem; padding: 8px 15px; }
+    #link a { font-size: 0.95rem; padding: 5px 10px; }
+    .popup {
+        top: 10px; right: 10px;
+        padding: 8px 15px;
+        font-size: 0.95rem;
+    }
 }
