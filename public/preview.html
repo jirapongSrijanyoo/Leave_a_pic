@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lamar File Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Add Noto Sans Thai font -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/preview.css">
+</head>
+<body>
+    <div class="main-layout">
+        <div class="mobile-overlay" id="mobileOverlay"></div>
+
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">Lamar CDN v1.6</div>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <!-- Theme Toggle Button -->
+                <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Theme">
+                    <!-- SVG icon will be added by JavaScript -->
+                </button>
+            </div>
+
+            <div class="nav">
+                <button class="active" onclick="goToRoot()">
+                    <span>Home</span>
+                </button>
+                <button onclick="window.location.href='index.html'">
+                    <span>Upload</span>
+                </button>
+            </div>
+
+            <div class="folders" id="sidebarFolders"></div>
+        </div>
+
+        <div class="main-content">
+            <div class="navbar">
+                <div class="path-bar" id="pathBar"></div>
+                <div class="actions">
+                    <button onclick="showCreateFolderDialog()">+ สร้างโฟลเดอร์</button>
+                </div>
+                <div class="file-toolbar">
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" placeholder="Search files..." />
+                        <button onclick="searchFiles()">Search</button>
+                        <button onclick="fetchMedia()">Refresh</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-area">
+                <div class="gallery" id="gallery"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <!-- Modal for folder creation/rename -->
+    <div id="modalBg" class="modal-bg">
+        <div class="modal" id="modalContent"></div>
+    </div>
+
+    <!-- Custom Context Menu -->
+    <div id="contextMenu" class="context-menu">
+        <!-- Menu items will be populated by JavaScript -->
+    </div>
+
+    <script src="/preview.js"></script>
+</body>
+</html>
