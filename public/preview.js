@@ -327,25 +327,34 @@ const modalBg = document.getElementById('modalBg'); // Get modal background
                 return;
             }
 
-            itemsToDisplay.forEach(item => {
-                const mediaItem = document.createElement('div');
-                mediaItem.className = `media-item ${viewMode}-view`;
-                // Store item data on the element for context menu
-                mediaItem._itemData = item;
+            const folders = itemsToDisplay.filter(item => item.folder);
+            const files = itemsToDisplay.filter(item => !item.folder);
 
-                if (item.folder) {
-                     // --- Folder Display ---
+            // Render Folders Section
+            if (folders.length > 0) {
+                const folderSectionHeader = document.createElement('h4');
+                folderSectionHeader.textContent = 'โฟลเดอร์';
+                folderSectionHeader.className = 'gallery-section-header';
+                gallery.appendChild(folderSectionHeader);
+
+                const folderGrid = document.createElement('div');
+                folderGrid.className = 'gallery-section folder-grid';
+                gallery.appendChild(folderGrid);
+
+                folders.forEach(item => {
+                    const mediaItem = document.createElement('div');
+                    mediaItem.className = `media-item folder-item ${viewMode}-view`;
+                    mediaItem._itemData = item; // Store item data
                     mediaItem.style.cursor = "pointer";
                     mediaItem.innerHTML = `
-                        <div class="media-preview" style="justify-content:center; background: linear-gradient(135deg, #fbbf24, #f59e0b);">
+                        <div class="media-preview folder-preview" style="justify-content:center; background: linear-gradient(135deg, #fbbf24, #f59e0b);">
                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
                                 <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-3l5 0 2 3h9a2 2 0 0 1 2 2z"></path>
                             </svg>
                         </div>
-                        <div class="media-info">
+                        <div class="media-info folder-info">
                             <div class="media-name" style="color: var(--warning); font-weight: 600;">${item.name.split("/").pop()}</div>
                         </div>
-                        <!-- Actions removed from HTML -->
                     `;
                      mediaItem.onclick = () => {
                         currentFolder = item.name;
@@ -353,8 +362,30 @@ const modalBg = document.getElementById('modalBg'); // Get modal background
                     };
                      // Add drag and drop for moving folders (drop target)
                     addFolderDropHandler(mediaItem, item.name);
+                    folderGrid.appendChild(mediaItem);
+                });
+            }
 
-                } else {
+            // Render Files Section
+            if (files.length > 0) {
+                 if (folders.length > 0) {
+                    const fileSectionHeader = document.createElement('h4');
+                    fileSectionHeader.textContent = 'ไฟล์';
+                    fileSectionHeader.className = 'gallery-section-header';
+                    gallery.appendChild(fileSectionHeader);
+                 }
+
+                const fileGrid = document.createElement('div');
+                fileGrid.className = 'gallery-section file-grid';
+                gallery.appendChild(fileGrid);
+
+
+                files.forEach(item => {
+                    const mediaItem = document.createElement('div');
+                    mediaItem.className = `media-item file-item ${viewMode}-view`;
+                    // Store item data on the element for context menu
+                    mediaItem._itemData = item;
+
                     // --- File Display ---
                     mediaItem.style.cursor = "pointer"; // Still clickable for context menu
                     const previewContainer = document.createElement('div');
@@ -389,25 +420,22 @@ const modalBg = document.getElementById('modalBg'); // Get modal background
                     } else if (allowedTypes.videos.includes(fileType)) {
                         previewElement = document.createElement('video');
                         previewElement.src = item.url;
-                        previewElement.controls = false; // No controls in preview
-                        previewElement.muted = true;
+                        previewElement.controls = true; // Add controls for playback
+                        previewElement.muted = true; // Start muted
                         previewElement.preload = "metadata";
                         previewElement.style.width = "100%";
                         previewElement.style.height = "100%";
                         previewElement.style.objectFit = "contain";
                         previewElement.style.background = "#181a20";
                     } else if (allowedTypes.audios.includes(fileType)) {
-                        previewElement = document.createElement('div');
-                        previewElement.style.display = "flex";
-                        previewElement.style.flexDirection = "column";
-                        previewElement.style.alignItems = "center";
-                        previewElement.style.justifyContent = "center";
-                        previewElement.style.height = "100%";
+                        previewElement = document.createElement('audio');
+                        previewElement.src = item.url;
+                        previewElement.controls = true; // Add controls for playback
+                        previewElement.preload = "metadata";
                         previewElement.style.width = "100%";
-                        previewElement.innerHTML = `
-                            <span style="font-size:2.5rem; color:#38bdf8;">🎵</span>
-                            <!-- Audio controls will be in context menu or open action -->
-                        `;
+                        previewElement.style.height = "auto"; // Auto height for audio controls
+                        previewElement.style.marginTop = "auto"; // Push to bottom
+                        previewElement.style.marginBottom = "auto"; // Center vertically
                     } else if (allowedTypes.pdfs.includes(fileType)) {
                         previewElement = document.createElement('div');
                         previewElement.innerHTML = '📄';
@@ -458,11 +486,10 @@ const modalBg = document.getElementById('modalBg'); // Get modal background
 
                     // Add drag source handler for files
                     addDragAndDropHandlers(mediaItem, item);
-                }
 
-
-                gallery.appendChild(mediaItem);
-            });
+                    fileGrid.appendChild(mediaItem);
+                });
+            }
         }
 
         // --- Helper Functions ---
@@ -580,10 +607,22 @@ const modalBg = document.getElementById('modalBg'); // Get modal background
         // --- File Rename ---
         function showRenameFileDialog(oldFilename) {
              const filenameOnly = oldFilename.split("/").pop();
+             const lastDotIndex = filenameOnly.lastIndexOf('.');
+             let baseName = filenameOnly;
+             let extension = '';
+
+             if (lastDotIndex > 0) { // Ensure it's not a dot file like .bashrc
+                 baseName = filenameOnly.substring(0, lastDotIndex);
+                 extension = filenameOnly.substring(lastDotIndex); // Keep the dot
+             }
+
 
             showModal(`
                 <h3>เปลี่ยนชื่อไฟล์</h3>
-                <input id="newFileName" type="text" value="${filenameOnly}">
+                <div class="rename-input-container">
+                    <input id="newFileNameBase" type="text" value="${baseName}" class="rename-input-base">
+                    <input id="newFileNameExt" type="text" value="${extension}" readonly class="rename-input-ext">
+                </div>
                 <div class="modal-actions">
                     <button onclick="hideModal()">ยกเลิก</button>
                     <button onclick="renameFile('${oldFilename}')">เปลี่ยนชื่อ</button>
@@ -592,16 +631,22 @@ const modalBg = document.getElementById('modalBg'); // Get modal background
         }
 
         async function renameFile(oldFilename) {
-            const newFileNameOnly = document.getElementById('newFileName').value.trim();
-            if (!newFileNameOnly) {
-                showToast('กรุณากรอกชื่อใหม่', 'error');
+            const newFileNameBase = document.getElementById('newFileNameBase').value.trim();
+            const newFileNameExt = document.getElementById('newFileNameExt').value; // Get the fixed extension
+
+            if (!newFileNameBase) {
+                showToast('กรุณากรอกชื่อไฟล์ใหม่', 'error');
                 return;
             }
 
             const oldPathParts = oldFilename.split("/");
-            oldPathParts.pop();
+            oldPathParts.pop(); // Remove the old filename
             const directoryPath = oldPathParts.join("/");
+
+            // Construct the new filename using the new base name and the original extension
+            const newFileNameOnly = newFileNameBase + newFileNameExt;
             const newFilename = directoryPath ? `${directoryPath}/${newFileNameOnly}` : newFileNameOnly;
+
 
             if (oldFilename === newFilename) {
                  showToast('ชื่อใหม่เหมือนชื่อเดิม', 'error');
@@ -729,6 +774,11 @@ const modalBg = document.getElementById('modalBg'); // Get modal background
         function addDragAndDropHandlers(mediaItem, file) {
             mediaItem.setAttribute('draggable', true);
             mediaItem.addEventListener('dragstart', e => {
+                // Prevent dragging the audio/video controls themselves
+                if (e.target.tagName === 'AUDIO' || e.target.tagName === 'VIDEO') {
+                    e.preventDefault();
+                    return;
+                }
                 e.dataTransfer.setData("text/plain", JSON.stringify({
                     filename: file.name.split("/").pop(),
                     fromFolder: currentFolder
