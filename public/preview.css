@@ -450,20 +450,39 @@ a:hover {
 
 /* --- Gallery --- */
 .gallery {
-    display: grid;
-    gap: 2rem;
+    display: flex; /* Use flexbox for main layout */
+    flex-direction: column; /* Stack sections vertically */
+    gap: 2rem; /* Gap between sections */
+    align-items: stretch; /* Stretch sections */
+}
+
+.gallery-section-header {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0 0 1rem 0; /* Space below header */
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-light);
+    grid-column: 1 / -1; /* Span across all columns in the main grid */
+}
+
+.gallery-section {
+    display: grid; /* Use grid for items within sections */
+    gap: 2rem; /* Gap between items */
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     align-items: start;
 }
-.gallery.list-view {
+
+.gallery.list-view .gallery-section {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
-.gallery.icons-view {
+.gallery.icons-view .gallery-section {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 1rem;
 }
+
 
 /* --- Media Items (Files & Folders) --- */
 .media-item {
@@ -514,6 +533,14 @@ a:hover {
     border-radius: var(--border-radius);
     object-fit: cover;
 }
+
+/* Specific styles for audio preview */
+.media-preview audio {
+    width: 100%; /* Make audio player fill width */
+    height: auto; /* Allow height to adjust */
+    margin: auto; /* Center vertically */
+}
+
 .media-preview.icons-view {
     aspect-ratio: 1;
     margin-bottom: 0.5rem;
@@ -651,16 +678,24 @@ a:hover {
 }
 .modal input,
 .modal select {
-    width: 100%;
+    /* Keep general input styles */
+    width: 100%; /* Default width */
     padding: 0.85rem;
     border-radius: var(--border-radius);
     border: 1px solid var(--border);
-    margin-bottom: 1rem;
+    margin-bottom: 1rem; /* Default margin-bottom */
     background: var(--bg-secondary);
     color: var(--text);
     font-size: 1rem;
     transition: var(--transition);
 }
+
+/* Remove margin-bottom from inputs within the rename container */
+.rename-input-container input {
+    margin-bottom: 0;
+}
+
+
 .modal input:focus,
 .modal select:focus {
     outline: none;
@@ -696,6 +731,34 @@ a:hover {
 .modal .modal-actions button:last-child:hover {
     background: var(--primary-dark);
 }
+
+/* --- Rename Input Specific Styles --- */
+.rename-input-container {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 1rem; /* Keep margin-bottom on the container */
+}
+
+.rename-input-base {
+    flex-grow: 1; /* Allow base name input to take available space */
+    min-width: 0; /* Allow shrinking */
+}
+
+.rename-input-ext {
+    /* Set a fixed width or max-width for the extension */
+    width: auto; /* Let content determine width initially */
+    max-width: 80px; /* Limit max width */
+    flex-grow: 0; /* Prevent growing */
+    flex-shrink: 0; /* Prevent shrinking below content size */
+    background-color: var(--bg-secondary); /* Keep background */
+    color: var(--text-muted); /* Keep muted text color */
+    cursor: default; /* Indicate it's not editable */
+    text-align: center; /* Center the extension text */
+    padding-left: 0.5rem; /* Adjust padding */
+    padding-right: 0.5rem; /* Adjust padding */
+}
+
 
 /* --- Custom Context Menu --- */
 .context-menu {
@@ -737,17 +800,17 @@ a:hover {
 
 /* --- Responsive Design --- */
 @media (max-width: 1200px) {
-    .gallery {
+    .gallery-section {
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
         gap: 1.2rem;
     }
 }
 @media (max-width: 900px) {
-    .gallery {
+    .gallery-section {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         gap: 0.8rem;
     }
-    .gallery.icons-view {
+    .gallery.icons-view .gallery-section {
         grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
     }
 }
@@ -802,11 +865,11 @@ a:hover {
     .file-area {
         padding: 1rem;
     }
-    .gallery {
+    .gallery-section {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         gap: 0.7rem;
     }
-    .gallery.icons-view {
+    .gallery.icons-view .gallery-section {
         grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
     }
     /* Hide actions on mobile list view */
@@ -848,7 +911,7 @@ a:hover {
     .file-toolbar .search-bar button {
         width: 100%;
     }
-    .gallery {
+    .gallery-section {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         gap: 0.5rem;
     }
@@ -863,7 +926,7 @@ a:hover {
     .file-area {
         padding: 0.5rem;
     }
-    .gallery {
+    .gallery-section {
         grid-template-columns: 1fr 1fr;
         gap: 0.4rem;
     }
